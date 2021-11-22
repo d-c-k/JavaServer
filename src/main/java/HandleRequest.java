@@ -1,20 +1,22 @@
 package main.java;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class HandleRequest {
 
     private String method;
     private URI uri;
+    private Headers headers;
     private String body;
 
     public String getMethod() {
@@ -33,6 +35,14 @@ public class HandleRequest {
         this.uri = uri;
     }
 
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
+    }
+
     public String getBody() {
         return body;
     }
@@ -49,15 +59,37 @@ public class HandleRequest {
 
             setUri(request.getRequestURI());
             setMethod(request.getRequestMethod());
+            setHeaders(request.getRequestHeaders());
             setBody(request.getRequestBody());
-
-            OutputStream os = request.getResponseBody();
 
             System.out.println("Method: " + this.method);
             System.out.println("Body: " + this.body);
             System.out.println("URI: " + this.uri);
 
-            os.close();
+
+            headers.forEach((key, value) -> System.out.println(key + ":" + value));
+
+            request.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleGetAll(HttpExchange request) {
+        try {
+            final String requiredMethod = "GET";
+            setMethod(request.getRequestMethod());
+
+            if (!Objects.equals(this.method, requiredMethod)) {
+                request.sendResponseHeaders(401, 0);
+                System.out.println("fail");
+                request.close();
+            }
+            else {
+                request.sendResponseHeaders(200, 0);
+                System.out.println("win");
+                request.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

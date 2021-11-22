@@ -11,12 +11,21 @@ public class Main {
 
         int port = 3000;
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+
         HttpContext root = httpServer.createContext("/", new HttpHandler() {
             public void handle(HttpExchange httpExchange) {
                 HandleRequest hr = new HandleRequest();
                 hr.handleRequest(httpExchange);
             }
         });
+
+        HttpContext getAll = httpServer.createContext("/api/items", new HttpHandler() {
+            public void handle(HttpExchange httpExchange) {
+                HandleRequest hr = new HandleRequest();
+                hr.handleGetAll(httpExchange);
+            }
+        });
+
         httpServer.start();
 
     }
