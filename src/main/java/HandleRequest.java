@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +67,6 @@ public class HandleRequest {
             System.out.println("Body: " + this.body);
             System.out.println("URI: " + this.uri);
 
-
             headers.forEach((key, value) -> System.out.println(key + ":" + value));
 
             request.close();
@@ -75,21 +75,42 @@ public class HandleRequest {
         }
     }
 
-    public void handleGetAll(HttpExchange request) {
+    public void handleItems(HttpExchange request) {
         try {
-            final String requiredMethod = "GET";
             setMethod(request.getRequestMethod());
 
-            if (!Objects.equals(this.method, requiredMethod)) {
-                request.sendResponseHeaders(401, 0);
-                System.out.println("fail");
+            if (Objects.equals(this.method, "GET")) {
+                request.sendResponseHeaders(200, 0);
+                System.out.println("get all items");
+                request.close();
+            }
+            else if (Objects.equals(this.method, "POST")) {
+                request.sendResponseHeaders(201, 0);
+                System.out.println("created new item");
                 request.close();
             }
             else {
-                request.sendResponseHeaders(200, 0);
-                System.out.println("win");
+                request.sendResponseHeaders(400, 0);
+                System.out.println("bad request");
                 request.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleIndividualItems(HttpExchange request) {
+        try {
+           setMethod(request.getRequestMethod());
+            setUri(request.getRequestURI());
+            Map<String, String> test = parseQueryString(this.uri.getQuery());
+
+            test.forEach((key, value) -> System.out.println(key + ":" + value));
+            System.out.println("hej");
+
+           request.close();
+
+           //if()
         } catch (Exception e) {
             e.printStackTrace();
         }
