@@ -18,7 +18,7 @@ public class Create {
             MongoCollection<Document> itemsCollection = mainJavaDB.getCollection("items");
 
             Document item = new Document("_id", new ObjectId());
-            item    .append("title", "java-test-title1")
+            item    .append("title", "java-test-title3")
                     .append("body", "test-body")
                     .append("createdAt", new Date())
                     .append("updatedAt", new Date());
