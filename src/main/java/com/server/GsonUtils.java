@@ -1,4 +1,4 @@
-package main.java;
+package com.server;
 
 import com.google.gson.*;
 import org.bson.types.ObjectId;

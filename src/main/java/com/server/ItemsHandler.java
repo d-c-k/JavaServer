@@ -1,16 +1,12 @@
-package main.java;
+package com.server;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Updates;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import main.java.models.Item;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
@@ -24,8 +20,6 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.eq;
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class ItemsHandler implements HttpHandler {
 
