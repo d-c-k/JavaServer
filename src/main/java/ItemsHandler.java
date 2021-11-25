@@ -32,16 +32,7 @@ public class ItemsHandler implements HttpHandler {
     @Override
 
     public void handle(HttpExchange he) throws IOException {
-        ConnectionString connectionString = new ConnectionString(System.getProperty("mongodb.uri"));
-        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
-        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-
-        MongoClientSettings clientSettings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .codecRegistry(codecRegistry)
-                .build();
-
-        try (MongoClient mongoClient = MongoClients.create(clientSettings)) {
+        try (MongoClient mongoClient = MongoClients.create(new DBConnection().connectionSettings())) {
             MongoDatabase mainJavaDB = mongoClient.getDatabase("mainJava");
             MongoCollection<Item> items = mainJavaDB.getCollection("items", Item.class);
 
@@ -103,13 +94,10 @@ public class ItemsHandler implements HttpHandler {
                                     .setUpdatedAt(new Date());
                             items.insertOne(newItem);
 
-                            System.out.println("created new item");
-                            System.out.println(newItem);
                             he.close();
                         }
                     } else {
                         he.sendResponseHeaders(400, 0);
-                        System.out.println("bad request");
                         he.close();
                     }
             }
